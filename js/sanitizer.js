@@ -6,10 +6,9 @@
  * It's the counterpart to our eslint "no-unsafe-innerhtml" plugin that helps us
  * avoid unsafe coding practices.
  * A full write-up of the Hows and Whys are documented
- * for developers at
- *  https://developer.mozilla.org/en-US/Firefox_OS/Security/Security_Automation
+ * for developers at https://developer.mozilla.org/en-US/Firefox_OS/Security/Security_Automation
  * with additional background information and design docs at
- *  https://wiki.mozilla.org/User:Fbraun/Gaia/SafeinnerHTMLRoadmap
+ * https://wiki.mozilla.org/User:Fbraun/Gaia/SafeinnerHTMLRoadmap
  *
  */
 (function (root, factory) {

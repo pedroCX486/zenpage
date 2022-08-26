@@ -83,11 +83,11 @@ function saveBookmarks() {
       });
     }
 
-    function emptyLink(link) {
-      return [].every.call(link.querySelectorAll('input'), function(linkValue) {
-        return linkValue.value.length === 0;
-      });
-    }
+    // function emptyLink(link) {
+    //   return [].every.call(link.querySelectorAll('input'), function(linkValue) {
+    //     return linkValue.value.length === 0;
+    //   });
+    // }
 
     function incompleteLink(link) {
       var inputs = link.querySelectorAll('input');
@@ -202,7 +202,7 @@ function restoreBookmarks() {
 }
 
 function makeLinks(links) {
-  var linksList = document.createElement('ul');
+  // var linksList = document.createElement('ul');
   var linksElements = [];
   var len = links.length > 3 ? links.length : 3; // Default 3 links per category
 
@@ -264,10 +264,6 @@ function restoreOptions() {
   restoreWeatherOptions();  
 }
 
-function enableAutocomplete() {
-  var autocomplete = new google.maps.places.Autocomplete(weatherLocationOption);
-}
-
 function getCurrentLocation() {
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -289,6 +285,7 @@ function getFormattedLocation(position, callback) {
   var latitude = position.coords.latitude;
   var longitude = position.coords.longitude;
 
+  // TODO: This whole thing seems to be deprected, use another API (geocode.xyz) and use Fetch.
   var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&key=AIzaSyAm8PKuGMBtijZo_1uvv0vgaDZWbXyssoM";
 
   request.onreadystatechange = function() {
@@ -315,12 +312,7 @@ function setLocation(formattedLocation) {
   weatherLocationOption.value = formattedLocation;
 }
 
-function isCity(address) {
-  return address.types.indexOf("locality") > -1;
-}
-
 document.querySelector('.geolocate').addEventListener('click', getCurrentLocation);
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
-document.getElementById('save').addEventListener('click',
-    saveOptions);
+document.getElementById('save').addEventListener('click', saveOptions);

@@ -1,5 +1,7 @@
 (function() {
 
+	//TODO: This whole thing is a shitshow. Needs to be moved to OpenWeatherMap and use Fetch.
+
     // Elements
     var weather = document.querySelector('.weather');
     var temperature = document.querySelector('.weather__temperature');

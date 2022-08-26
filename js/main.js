@@ -1,7 +1,7 @@
-(function() {
+(function () {
 	var timeDisplay = document.querySelector('.time');
 	var dateDisplay = document.querySelector('.date');
-	var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+	// var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
 	var hintRight = document.querySelector('.hint.right');
 	var hintBottom = document.querySelector('.hint.bottom');
 
@@ -11,7 +11,7 @@
 	var loadImageBtn = hintRight.querySelector('span:last-child');
 	var closeBtn = document.querySelector('.hint.top.left span:last-child');
 
-	document.addEventListener('click', function(e) {
+	document.addEventListener('click', function (e) {
 		if (bookmarksBtn.contains(e.target) && !bookmarks.classList.contains('open')) {
 			openBookmarks();
 		} else if (bookmarks.classList.contains('open') && !bookmarksWrap.contains(e.target)) {
@@ -25,20 +25,22 @@
 		}
 	});
 
-	document.addEventListener('keydown', function(e) {
-		if (e.keyCode === 66 && e.ctrlKey && !bookmarks.classList.contains('open')) {
+	document.addEventListener('keydown', function (event) {
+		if (event.key === 'b' && event.ctrlKey && !bookmarks.classList.contains('open')) {
 			openBookmarks();
-		} else if (e.keyCode === 27 && bookmarks.classList.contains('open')) {
-			closeBookmarks();
-		} else if (e.keyCode === 67 && e.ctrlKey) {
+		} else if (event.key === 'c' && event.ctrlKey) {
 			document.querySelector('.hint.right').classList.add('animated', 'jello');
 			loadImage();
+		} else if (event.key === 'Escape' && bookmarks.classList.contains('open')) {
+			closeBookmarks();
 		}
 	});
 
-	hintRight.addEventListener('animationend', resetAnimation);	
+	hintRight.addEventListener('animationend', resetAnimation);
 
+	// Schedule ticks, then tick for the first time.
 	setInterval(tick, 1000);
+	tick();
 
 	function openBookmarks() {
 		bookmarks.classList.add('open');
