@@ -1,9 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Startpage options</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ZenPage Options</title>
+
     <link rel="stylesheet" href="css/main.css">
+
+    <style>
+        .quick-links-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-content: space-between;
+        }
+    </style>
 </head>
 
 <body>
@@ -11,7 +24,7 @@
         <div class="options">
             <h2>Quick links</h2>
             <p>These are the icons that will be displayed below the search bar.</p>
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-content: space-between;">
+            <div class="quick-links-container">
                 <div class="site flex">
                     <label for="500px">500px</label>
                     <input id="500px" type="checkbox">
@@ -236,7 +249,7 @@
                 <label for="display-weather">Show the weather widget</label>
                 <input id="display-weather" name="display-weather" type="checkbox">
             </div>
-            
+
             <div class="input-group">
                 <label class="input-information" for="unit">Units</label>
                 <input type="radio" id="celsius" name="unit" value="celsius">
@@ -248,14 +261,15 @@
 
             <div class="input-group">
                 <label class="input-information" for="weather-location">Location</label>
-                <input type="text" id="weather-location" name="weather-location" placeholder="Type your 'City, State' - eg.: Boston, Massachusetts"><br><br>
+                <input type="text" id="weather-location" name="weather-location"
+                    placeholder="Type your 'City, State' - eg.: Boston, Massachusetts"><br><br>
                 <button type="button" class="geolocate">Use current location</button>
             </div>
 
         </div>
 
         <div id="status"></div>
-        <button id="save">Save</button>
+        <button type="button" id="save">Save</button>
     </div>
     <script src="js/options.js"></script>
     </div>
