@@ -1,17 +1,35 @@
-# zenpage
-Chrome and Firefox extension that replaces the New Tab page with a personalised homepage, featuring beautiful photography, bookmark management and weather information.
+# ZenPage+
+Chrome (and Firefox but untested) extension that replaces the New Tab page with a personalised homepage, featuring beautiful photography, bookmark management and weather information.
+
+Forked from the original [ZenPage](https://github.com/jack-doyle/zenpage) to fix most issues and refactor the old broken code.
 
 ## Features
 * High-resolution photography from [Unsplash](https://unsplash.com)
 * Quick links to popular sites
-* Categorisable bookmarks
-* Weather widget displaying information from [Yahoo Weather](https://www.yahoo.com/news/weather)
+* Categorizable bookmarks
+* Weather widget displaying information from [OpenWeatherMap](https://openweathermap.org/)
 
-## Chrome Extension
-View and install the extension [here](https://chrome.google.com/webstore/detail/zenpage/ambkjbmmhhlgjikfoimpdpicohjlfcnm).
+## Installing
+First click in Code > Download Zip > Extract zip
+Then in your browser go to Extensions > Enable Developer Mode > Load Unpacked > Select the directory where you extracted the zip
+You WILL NEED an API key (easy to get) from the services used to have full functionality (Unsplash, Geocode.xyz and OpenWeatherMap), put them in the `config-example.js` file and rename it to `config.js`.
+Done!
+
+ProTip: The OpenWeatherMap API Key takes a while to activate, usually up to an hour.
 
 ## Screenshots
-
 ![Home-one](/screenshots/valley.png?raw=true)
 ![Home-two](/screenshots/strawberries.png?raw=true)
 ![Bookmarks](/screenshots/bmarks.png?raw=true)
+
+## License
+Same as the old ZenPage. Which is, who knows. My changes are under the WTFPL.
+
+## Contributing
+Just open a PR, if I agree with your changes I'll merge. If not, fork it.
+
+## TODO:
+- Change the FontAwesome library to something better and opensource
+- Add more popular sites to the Quick Links
+- Add parsing to use new weather icons from OpenWeatherMap
+- Cleanup the code even more
