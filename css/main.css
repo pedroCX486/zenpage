@@ -87,7 +87,7 @@ a:focus {
 .weather {
   display: none;
   position: absolute;
-  top: 0;
+  top: 1rem;
   left: 2rem;
   text-align: center;
 }
