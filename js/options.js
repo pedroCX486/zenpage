@@ -1,136 +1,134 @@
-var sitesOptions = document.querySelectorAll('.site');
-var weatherLocationOption = document.querySelector('#weather-location');
-var weatherCelsiusOption = document.querySelector('#celsius');
-var weatherFahrenheitOption = document.querySelector('#fahrenheit');
-var weatherDisplayOption = document.querySelector('#display-weather');
+let sitesOptions = document.querySelectorAll('.site');
+let weatherLocationOption = document.querySelector('#weather-location');
+let weatherCelsiusOption = document.querySelector('#celsius');
+let weatherFahrenheitOption = document.querySelector('#fahrenheit');
+let weatherDisplayOption = document.querySelector('#display-weather');
+
+let latitude = '';
+let longitude = '';
 
 function saveBookmarks() {
-    var bookmarks = [];
-    var bookmarksOptions = document.querySelectorAll('.bookmark-option-category');
-    var categoryErrors = document.querySelectorAll('.error.error--category-name');
-    var linkErrors = document.querySelectorAll('.error.error--category-links');
+  let bookmarks = [];
+  let bookmarksOptions = document.querySelectorAll('.bookmark-option-category');
+  let categoryErrors = document.querySelectorAll('.error.error--category-name');
+  let linkErrors = document.querySelectorAll('.error.error--category-links');
 
-    // Reset error messages
-    categoryErrors.forEach(setEmpty);
-    linkErrors.forEach(setEmpty);
+  // Reset error messages
+  categoryErrors.forEach(setEmpty);
+  linkErrors.forEach(setEmpty);
 
-    // Validation
-    bookmarksOptions.forEach(function(option, index) {
-      var categoryName = option.querySelector('input').value;
-      var categoryLinks = option.querySelectorAll('.bookmark-option-link');
+  // Validation
+  bookmarksOptions.forEach(function (option, index) {
+    let categoryName = option.querySelector('input').value;
+    let categoryLinks = option.querySelectorAll('.bookmark-option-link');
 
-      // Empty category name with at least one link
-      if (categoryName.length === 0 && [].some.call(categoryLinks, validLink)) {
-        handleCategoryError('Category name cannot be empty.', index);
-      }
+    // Empty category name with at least one link
+    if (categoryName.length === 0 && [].some.call(categoryLinks, validLink)) {
+      handleCategoryError('Category name cannot be empty.', index);
+    }
 
-      // Category name but no complete links
-      if (categoryName.length > 0 && ![].some.call(categoryLinks, validLink)) {
-        handleCategoryError('Category must contain at least one bookmark.', index);
-      }
+    // Category name but no complete links
+    if (categoryName.length > 0 && ![].some.call(categoryLinks, validLink)) {
+      handleCategoryError('Category must contain at least one bookmark.', index);
+    }
 
-      // Incomplete links
-      if ([].some.call(categoryLinks, incompleteLink)) {
-        handleLinkError(index);
-      }
+    // Incomplete links
+    if ([].some.call(categoryLinks, incompleteLink)) {
+      handleLinkError(index);
+    }
+  });
+
+  // If no errors
+  if ([].every.call(categoryErrors, isEmpty) && [].every.call(linkErrors, isEmpty)) {
+    bookmarksOptions.forEach(function (bookmark, index) {
+      let categoryName = bookmark.getElementsByTagName('input')[0].value;
+      let categoryLinksOptions = bookmark.getElementsByClassName('bookmark-option-link');
+
+      let categoryLinks = [];
+
+      Array.prototype.forEach.call(categoryLinksOptions, function (link) {
+        let url = {
+          title: link.getElementsByTagName('input')[0].value,
+          url: link.getElementsByTagName('input')[1].value
+        };
+
+        categoryLinks.push(url);
+      });
+
+      categoryLinks = categoryLinks.filter(function (link) { return link.title.length > 0 && link.url.length > 0 })
+
+      bookmarks.push({
+        category: categoryName,
+        links: categoryLinks
+      });
     });
- 
-    // If no errors
-    if ([].every.call(categoryErrors, isEmpty) && [].every.call(linkErrors, isEmpty)) {
-      bookmarksOptions.forEach(function(bookmark, index) {
-          var categoryName = bookmark.getElementsByTagName('input')[0].value;
-          var categoryLinksOptions = bookmark.getElementsByClassName('bookmark-option-link');
 
-          var categoryLinks = [];
+    bookmarks = bookmarks.filter(function (bookmark) { return bookmark.category.length > 0 });
 
-          Array.prototype.forEach.call(categoryLinksOptions, function(link) {
-              var link = {
-                  title: link.getElementsByTagName('input')[0].value,
-                  url: link.getElementsByTagName('input')[1].value
-              };
+    chrome.storage.sync.set({
+      bookmarks: bookmarks
+    }, function () {
+      notifySave();
+    });
+  }
 
-              categoryLinks.push(link);
-          });
+  function setEmpty(node) {
+    node.textContent = '';
+  }
 
-          categoryLinks = categoryLinks.filter(function(link) { return link.title.length > 0 && link.url.length > 0 })
+  function isEmpty(node) {
+    return node.textContent === '';
+  }
 
-          bookmarks.push({
-              category: categoryName,
-              links: categoryLinks
-          });
-      });
+  function validLink(link) {
+    return [].every.call(link.querySelectorAll('input'), function (linkValue) {
+      return linkValue.value.length > 0;
+    });
+  }
 
-      bookmarks = bookmarks.filter(function(bookmark) { return bookmark.category.length > 0 });
+  function incompleteLink(link) {
+    let inputs = link.querySelectorAll('input');
 
-      chrome.storage.sync.set({
-          bookmarks: bookmarks
-      }, function() {
-          notifySave();
-      });
-    }
-
-    function setEmpty(node) {
-      node.textContent = '';
-    }
-
-    function isEmpty(node) {
-      return node.textContent === '';
-    }
-
-    function validLink(link) {
-      return [].every.call(link.querySelectorAll('input'), function(linkValue) {
-        return linkValue.value.length > 0;
-      });
-    }
-
-    // function emptyLink(link) {
-    //   return [].every.call(link.querySelectorAll('input'), function(linkValue) {
-    //     return linkValue.value.length === 0;
-    //   });
-    // }
-
-    function incompleteLink(link) {
-      var inputs = link.querySelectorAll('input');
-
-      return [].some.call(inputs, function(linkValue) {
-          return linkValue.value.length === 0;
-        }) && [].some.call(inputs, function(linkValue) {
-          return linkValue.value.length > 0;
-        });
-    }
+    return [].some.call(inputs, function (linkValue) {
+      return linkValue.value.length === 0;
+    }) && [].some.call(inputs, function (linkValue) {
+      return linkValue.value.length > 0;
+    });
+  }
 }
 
 function saveQuickLinks() {
-    function getCheckbox(site) {
-      return site.getElementsByTagName('input')[0];
-    }
+  function getCheckbox(site) {
+    return site.getElementsByTagName('input')[0];
+  }
 
-    var selectedSites = [].map.call(sitesOptions, function(site) {
-      return {
-        name: getCheckbox(site).id,
-        selected: getCheckbox(site).checked
-      };
-    });
+  let selectedSites = [].map.call(sitesOptions, function (site) {
+    return {
+      name: getCheckbox(site).id,
+      selected: getCheckbox(site).checked
+    };
+  });
 
-    chrome.storage.sync.set({
-        selectedSites: selectedSites
-    }, function() {
-        // Update status to let user know options were saved.
-        notifySave();
-    });
+  chrome.storage.sync.set({
+    selectedSites: selectedSites
+  }, function () {
+    notifySave();
+  });
 }
 
 function saveWeatherOptions() {
-  var weatherUnits = 'c';
+  let weatherUnits = 'metric';
 
   if (weatherFahrenheitOption.checked) {
-    weatherUnits = 'f';
+    weatherUnits = 'imperial';
   }
 
-  var weatherOptions = {
+  let weatherOptions = {
     show: weatherDisplayOption.checked,
     units: weatherUnits,
-    location: weatherLocationOption.value
+    location: weatherLocationOption.value,
+    latitude: latitude,
+    logitude: longitude
   };
 
   chrome.storage.sync.set({
@@ -139,59 +137,59 @@ function saveWeatherOptions() {
 }
 
 function saveOptions() {
-    saveBookmarks();
-    saveQuickLinks();
-    saveWeatherOptions();
+  saveBookmarks();
+  saveQuickLinks();
+  saveWeatherOptions();
 }
 
 function notifySave() {
-    var status = document.getElementById('status');
-    status.textContent = 'Options saved.';
-    setTimeout(function() {
-        status.textContent = '';
-    }, 750);
+  let status = document.getElementById('status');
+  status.textContent = 'Options saved.';
+  setTimeout(function () {
+    status.textContent = '';
+  }, 750);
 }
 
 function handleCategoryError(message, index) {
-    var categoryStatus = document.querySelectorAll('.error.error--category-name')[index];
-    categoryStatus.textContent = message;
+  let categoryStatus = document.querySelectorAll('.error.error--category-name')[index];
+  categoryStatus.textContent = message;
 }
 
 function handleLinkError(index) {
-  var linkStatus = document.querySelectorAll('.error.error--category-links')[index];
+  let linkStatus = document.querySelectorAll('.error.error--category-links')[index];
   linkStatus.textContent = 'You have one or more incomplete bookmarks.';
 }
 
 function restoreBookmarks() {
-  chrome.storage.sync.get({ bookmarks: [] }, function(items) {
-    var bookmarks = items.bookmarks;
-    var len = bookmarks.length > 3 ? bookmarks.length : 3; // Default 3 categories
+  chrome.storage.sync.get({ bookmarks: [] }, function (items) {
+    let bookmarks = items.bookmarks;
+    let len = bookmarks.length > 3 ? bookmarks.length : 3; // Default 3 categories
 
-    var bookmarksList = document.querySelector('.bookmark-options ul');
+    let bookmarksList = document.querySelector('.bookmark-options ul');
 
-    for (var i = 0; i < len; i++) {
-      var bookmarkCategory = document.createElement('li');
+    for (let i = 0; i < len; i++) {
+      let bookmarkCategory = document.createElement('li');
       bookmarkCategory.classList.add('bookmark-option-category');
 
-      var categoryInput = document.createElement('input');
+      let categoryInput = document.createElement('input');
       categoryInput.placeholder = 'Category';
       categoryInput.value = bookmarks[i] ? bookmarks[i].category : '';
       categoryInput.type = 'text';
 
-      var categoryStatus = document.createElement('span');
+      let categoryStatus = document.createElement('span');
       categoryStatus.classList.add('error', 'error--category-name');
 
       bookmarkCategory.appendChild(categoryInput);
       bookmarkCategory.appendChild(categoryStatus);
 
-      var linksList = document.createElement('ul');
-      var linkStatus = document.createElement('span');
+      let linksList = document.createElement('ul');
+      let linkStatus = document.createElement('span');
       linkStatus.classList.add('error', 'error--category-links');
       linksList.appendChild(linkStatus);
 
-      var linkElements = makeLinks(bookmarks[i] ? bookmarks[i].links : []);
+      let linkElements = makeLinks(bookmarks[i] ? bookmarks[i].links : []);
 
-      linkElements.forEach(function(el) {
+      linkElements.forEach(function (el) {
         linksList.appendChild(el);
       });
 
@@ -202,20 +200,20 @@ function restoreBookmarks() {
 }
 
 function makeLinks(links) {
-  // var linksList = document.createElement('ul');
-  var linksElements = [];
-  var len = links.length > 3 ? links.length : 3; // Default 3 links per category
+  // let linksList = document.createElement('ul');
+  let linksElements = [];
+  let len = links.length > 3 ? links.length : 3; // Default 3 links per category
 
-  for (var j = 0; j < len; j++) {
-    var linkEl = document.createElement('li');
+  for (let j = 0; j < len; j++) {
+    let linkEl = document.createElement('li');
     linkEl.classList.add('bookmark-option-link');
 
-    var linkTitleInput = document.createElement('input');
+    let linkTitleInput = document.createElement('input');
     linkTitleInput.placeholder = 'Name';
     linkTitleInput.value = links[j] ? links[j].title : '';
     linkTitleInput.type = 'text';
 
-    var linkUrlInput = document.createElement('input');
+    let linkUrlInput = document.createElement('input');
     linkUrlInput.placeholder = 'Url';
     linkUrlInput.value = links[j] ? links[j].url : '';
     linkUrlInput.type = 'text';
@@ -230,25 +228,25 @@ function makeLinks(links) {
 
 function restoreQuickLinks() {
   chrome.storage.sync.get({
-        selectedSites: []
-    }, function(items) {
-        items.selectedSites.forEach(function(site) {
-            document.getElementById(site.name).checked = site.selected;
-        });
+    selectedSites: []
+  }, function (items) {
+    items.selectedSites.forEach(function (site) {
+      document.getElementById(site.name).checked = site.selected;
     });
+  });
 }
 
 function restoreWeatherOptions() {
   chrome.storage.sync.get({
     weather: {}
-  }, function(options) {
+  }, function (options) {
     if (options.weather.show) {
       weatherDisplayOption.checked = true;
     }
 
-    if (options.weather.units === 'c') {
+    if (options.weather.units === 'metric') {
       weatherCelsiusOption.checked = true;
-    } else if (options.weather.units === 'f') {
+    } else if (options.weather.units === 'imperial') {
       weatherFahrenheitOption.checked = true;
     }
 
@@ -261,18 +259,18 @@ function restoreWeatherOptions() {
 function restoreOptions() {
   restoreQuickLinks();
   restoreBookmarks();
-  restoreWeatherOptions();  
+  restoreWeatherOptions();
 }
 
 function getCurrentLocation() {
   if ('geolocation' in navigator) {
-    navigator.geolocation.getCurrentPosition(function(position) {
+    navigator.geolocation.getCurrentPosition(function (position) {
       if (position) {
         getFormattedLocation(position, setLocation);
       } else {
         alert('Error getting location. Please manually enter your location in the text box.');
       }
-    }, function(error) {
+    }, function (error) {
       alert('Error: ' + error.message);
     });
   } else {
@@ -281,31 +279,23 @@ function getCurrentLocation() {
 }
 
 function getFormattedLocation(position, callback) {
-  var request = new XMLHttpRequest();
-  var latitude = position.coords.latitude;
-  var longitude = position.coords.longitude;
+  let apiKey = config.geocodeXyzApiKey;
+  latitude = position.coords.latitude;
+  longitude = position.coords.longitude;
 
-  // TODO: This whole thing seems to be deprected, use another API (geocode.xyz) and use Fetch.
-  var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&key=AIzaSyAm8PKuGMBtijZo_1uvv0vgaDZWbXyssoM";
+  fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=${apiKey}`)
+    .then(response => response.json().then(data => ({ status: response.status, data })))
+    .then((response) => {
+      let formattedLocation = response.data.region;
 
-  request.onreadystatechange = function() {
-    if (request.readyState === XMLHttpRequest.DONE) {
-      if (request.status === 200) {
-
-        var response = JSON.parse(request.responseText);
-        var formattedLocation = response.results.filter(isCity)[0].formatted_address;
-
-          if (callback && typeof callback === "function") {
-            callback(formattedLocation);
-          }
-      } else {
-          alert('Error getting location information.');
+      if (callback && typeof callback === "function") {
+        callback(formattedLocation);
       }
-    }
-  }
-
-  request.open('GET', url);
-  request.send();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert('Error getting location information.');
+    });
 }
 
 function setLocation(formattedLocation) {

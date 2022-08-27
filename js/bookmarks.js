@@ -1,49 +1,49 @@
-var bookmarks = document.querySelector('.bookmarks-wrap');
+let bookmarks = document.querySelector('.bookmarks-wrap');
 
 loadBookmarks();
 
 function loadBookmarks() {
-    chrome.storage.sync.get({
-        bookmarks: []
-    }, function(items) {
-        if (items.bookmarks.length === 0) {
-            var bookmarksInfo = document.createElement('div');
-            bookmarksInfo.classList.add('bookmarks-info');
-            
-            var title = document.createElement('span');
-            title.textContent = 'No bookmarks yet.';
-            title.classList.add('title');
+  chrome.storage.sync.get({
+    bookmarks: []
+  }, function (items) {
+    if (items.bookmarks.length === 0) {
+      let bookmarksInfo = document.createElement('div');
+      bookmarksInfo.classList.add('bookmarks-info');
 
-            var subtitle = document.createElement('p');
-            subtitle.innerHTML = 'Add bookmarks on the <a href="options.html">options page</a>.';
-            subtitle.classList.add('subtitle');
+      let title = document.createElement('span');
+      title.textContent = 'No bookmarks yet.';
+      title.classList.add('title');
 
-            bookmarksInfo.appendChild(title);
-            bookmarksInfo.appendChild(subtitle);
+      let subtitle = document.createElement('p');
+      subtitle.innerHTML = 'Add bookmarks on the <a href="options.html">options page</a>.';
+      subtitle.classList.add('subtitle');
 
-            bookmarks.appendChild(bookmarksInfo);
-        } else {
-            items.bookmarks.forEach(function(bookmark) {
-                var newCategory = document.createElement('div');
-                newCategory.classList.add('category');
+      bookmarksInfo.appendChild(title);
+      bookmarksInfo.appendChild(subtitle);
 
-                var categoryNameHtml = `<div class="category__name">${bookmark.category}</div>`;
-                var categoryLinksHtml = buildLinks(bookmark.links);
+      bookmarks.appendChild(bookmarksInfo);
+    } else {
+      items.bookmarks.forEach(function (bookmark) {
+        let newCategory = document.createElement('div');
+        newCategory.classList.add('category');
 
-                newCategory.innerHTML = Sanitizer.escapeHTML(categoryNameHtml + categoryLinksHtml);
-                bookmarks.appendChild(newCategory);
-            });
-        }
-    });
+        let categoryNameHtml = `<div class="category__name">${bookmark.category}</div>`;
+        let categoryLinksHtml = buildLinks(bookmark.links);
+
+        newCategory.innerHTML = Sanitizer.escapeHTML(categoryNameHtml + categoryLinksHtml);
+        bookmarks.appendChild(newCategory);
+      });
+    }
+  });
 }
 
 function buildLinks(links) {
-    var html = '<div class="category__links"><ul>';
+  let html = '<div class="category__links"><ul>';
 
-    links.forEach(function(link) {
-        html += `<a href="${link.url}"><li>${link.title}</li></a>`;
-    });
+  links.forEach(function (link) {
+    html += `<a href="${link.url}"><li>${link.title}</li></a>`;
+  });
 
-    html += '</ul></div>';
-    return html;
+  html += '</ul></div>';
+  return html;
 }

@@ -1,53 +1,91 @@
-(function() {
+(function () {
+  let geoCodeApiKey = config.geocodeXyzApiKey;
+  let openWmApiKey = config.openWmApiKey;
 
-	//TODO: This whole thing is a shitshow. Needs to be moved to OpenWeatherMap and use Fetch.
+  let weather = document.querySelector('.weather');
+  let temperature = document.querySelector('.weather__temperature');
+  let unit = document.querySelector('.weather__unit');
+  let condition = document.querySelector('.weather__condition');
+  let conditionText = document.querySelector('.weather__condition-text');
+  let location = document.querySelector('.weather__location');
 
-    // Elements
-    var weather = document.querySelector('.weather');
-    var temperature = document.querySelector('.weather__temperature');
-    var unit = document.querySelector('.weather__unit');
-    var condition = document.querySelector('.weather__condition');
-    var conditionText = document.querySelector('.weather__condition-text');
-    var location = document.querySelector('.weather__location');
+  let formattedLocation = '';
+  let latitude = '';
+  let longitude = '';
+  let units = '';
 
-	chrome.storage.sync.get({
-		weather: {}
-	}, function(options) {
-		if (options.weather.show) {
-			// Weather API
-		    var PATH_WEATHER_BASE = 'https://query.yahooapis.com/v1/public/yql';
-		    var PATH_USER_LOCATION = options.weather.location;
-		    var PATH_USER_UNIT = options.weather.units;
-		    var PATH_SQL_QUERY = 'q=select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + PATH_USER_LOCATION + '") and u="' + PATH_USER_UNIT + '"';
-		    var PATH_ARRAY_FORMAT = 'format=json&diagnostics=false&env=store://datatables.org/alltableswithkeys&callback=';
+  chrome.storage.sync.get({
+    weather: {}
+  }, function (options) {
+    if (options.weather.show) {
+      units = options.weather.units;
+      formattedLocation = options.weather.location;
 
-		    var url = encodeURI(PATH_WEATHER_BASE + '?' + PATH_SQL_QUERY + '&' + PATH_ARRAY_FORMAT);
+      latitude = options.weather.latitude;
+      longitude = options.weather.longitude;
 
-		    // Query the API
-		    var request = new XMLHttpRequest();
-		    request.onreadystatechange = function() {
-		        if (request.readyState === XMLHttpRequest.DONE) {
-		            if (request.status === 200) {
-		            	weather.classList.add('active');
-		                updateWeather(JSON.parse(request.responseText));
-		            } else {
-		                alert('Error getting weather information.');
-		            }
-		        }
-		    }
-
-		    request.open('GET', url);
-		    request.send();
-		}
-	});
-
-    function updateWeather(data) {
-        data = data.query.results.channel;
-
-        temperature.innerHTML = data.item.condition.temp + '&deg;';
-        unit.innerHTML = data.units.temperature;
-        condition.classList.add('icon-' + data.item.condition.code);
-        conditionText.innerHTML = data.item.condition.text;
-        location.innerHTML = data.location.city + ', ' + data.location.country;
+      if (!!latitude && !!longitude) {
+        fetchWeather();
+      } else {
+        // Get Lat & Long from Formatted Location.
+        fetch(`https://geocode.xyz/${formattedLocation}?json=1&auth=${geoCodeApiKey}`)
+          .then(response => response.json().then(data => ({ status: response.status, data })))
+          .then((response) => {
+            latitude = response.data.latt;
+            longitude = response.data.longt;
+          }).then(() => {
+            fetchWeather();
+          })
+          .catch((error) => {
+            console.error(error);
+            alert('Error getting location information.');
+          });
+      }
     }
+  });
+
+  function fetchWeather() {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=${units}&appid=${openWmApiKey}`)
+      .then(response => response.json().then(data => ({ status: response.status, data })))
+      .then((response) => {
+        weather.classList.add('active');
+        updateWeather(response.data, units);
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('Error getting weather information.');
+      });
+  }
+
+  function updateWeather(data, units) {
+    temperature.innerHTML = data.main.temp.toString().split('.')[0] + '&deg;';
+    unit.innerHTML = parseUnits(units);
+    condition.classList.add('icon-' + data.weather[0].icon); // Need to use OWM icons, from here: https://openweathermap.org/weather-conditions
+    conditionText.innerHTML = data.weather[0].description;
+    location.innerHTML = printLocation();
+  }
+
+  function printLocation() {
+    if (!!formattedLocation) {
+      return formattedLocation;
+    } else {
+      fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=${geoCodeApiKey}`)
+        .then(response => response.json().then(data => ({ status: response.status, data })))
+        .then((response) => {
+          return response.data.region;
+        })
+        .catch((error) => {
+          console.error(error);
+          alert('Error getting location information.');
+        });
+    }
+  }
+
+  function parseUnits(units) {
+    if (units === 'metric') {
+      return 'c'
+    } else {
+      return 'f'
+    }
+  }
 })();

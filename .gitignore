@@ -1,4 +1,2 @@
-js/config.js
-icons/
-TODO.txt
-apis.keys
+config.js
+.DS_Store

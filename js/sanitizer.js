@@ -23,7 +23,7 @@
 }(this, function () {
   'use strict';
 
-  var Sanitizer = {
+  let Sanitizer = {
     _entity: /[&<>"'/]/g,
 
     _entities: {
@@ -43,9 +43,9 @@
      * Escapes HTML for all values in a tagged template string.
      */
     escapeHTML: function (strings, ...values) {
-      var result = '';
+      let result = '';
 
-      for (var i = 0; i < strings.length; i++) {
+      for (let i = 0; i < strings.length; i++) {
         result += strings[i];
         if (i < values.length) {
           result += String(values[i]).replace(Sanitizer._entity,
@@ -59,7 +59,7 @@
      * Escapes HTML and returns a wrapped object to be used during DOM insertion
      */
     createSafeHTML: function (strings, ...values) {
-      var escaped = Sanitizer.escapeHTML(strings, ...values);
+      let escaped = Sanitizer.escapeHTML(strings, ...values);
       return {
         __html: escaped,
         toString: function () {
@@ -74,7 +74,7 @@
      * underwent security review.
      */
     unwrapSafeHTML: function (...htmlObjects) {
-      var markupList = htmlObjects.map(function(obj) {
+      let markupList = htmlObjects.map(function(obj) {
         return obj.__html;
       });
       return markupList.join('');
