@@ -14,7 +14,6 @@ let units = '';
   let conditionText = document.querySelector('.weather__condition-text');
   let location = document.querySelector('.weather__location');
 
-
   chrome.storage.sync.get({
     weather: {}
   }, function (options) {

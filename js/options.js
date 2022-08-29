@@ -269,13 +269,21 @@ function getCurrentLocation() {
         getFormattedLocation(position, setLocation);
       } else {
         alert('Error getting location. Please manually enter your location in the text box.');
+        latitude = 0;
+        longitude = 0;
       }
     }, function (error) {
       alert('Error: ' + error.message);
+      latitude = 0;
+      longitude = 0;
     });
   } else {
     alert(`Your browser doesn't support geolocation. Please manually enter your location in the text box.`);
+    latitude = 0;
+    longitude = 0;
   }
+
+  saveWeatherOptions();
 }
 
 function getFormattedLocation(position, callback) {
