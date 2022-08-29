@@ -121,6 +121,7 @@ a:focus {
 
 .weather__condition-text {
   margin: 0.5rem 0;
+  text-transform: capitalize;
 }
 .weather__unit {
   margin-top: 0.5rem;
