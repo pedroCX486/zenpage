@@ -4,9 +4,6 @@ let weatherCelsiusOption = document.querySelector('#celsius');
 let weatherFahrenheitOption = document.querySelector('#fahrenheit');
 let weatherDisplayOption = document.querySelector('#display-weather');
 
-let latitude = '';
-let longitude = '';
-
 function saveBookmarks() {
   let bookmarks = [];
   let bookmarksOptions = document.querySelectorAll('.bookmark-option-category');
@@ -40,7 +37,7 @@ function saveBookmarks() {
 
   // If no errors
   if ([].every.call(categoryErrors, isEmpty) && [].every.call(linkErrors, isEmpty)) {
-    bookmarksOptions.forEach(function (bookmark, index) {
+    bookmarksOptions.forEach(function (bookmark) {
       let categoryName = bookmark.getElementsByTagName('input')[0].value;
       let categoryLinksOptions = bookmark.getElementsByClassName('bookmark-option-link');
 
@@ -126,9 +123,7 @@ function saveWeatherOptions() {
   let weatherOptions = {
     show: weatherDisplayOption.checked,
     units: weatherUnits,
-    location: weatherLocationOption.value,
-    latitude: latitude,
-    longitude: longitude
+    location: weatherLocationOption.value
   };
 
   chrome.storage.sync.set({
@@ -269,18 +264,12 @@ function getCurrentLocation() {
         getFormattedLocation(position, setLocation);
       } else {
         alert('Error getting location. Please manually enter your location in the text box.');
-        latitude = 0;
-        longitude = 0;
       }
     }, function (error) {
       alert('Error: ' + error.message);
-      latitude = 0;
-      longitude = 0;
     });
   } else {
     alert(`Your browser doesn't support geolocation. Please manually enter your location in the text box.`);
-    latitude = 0;
-    longitude = 0;
   }
 
   saveWeatherOptions();
@@ -288,13 +277,9 @@ function getCurrentLocation() {
 
 function getFormattedLocation(position, callback) {
   let positionStackApiKey = config.positionStackApiKey;
-  latitude = position.coords.latitude;
-  longitude = position.coords.longitude;
+  let latitude = position.coords.latitude;
+  let longitude = position.coords.longitude;
   let formattedLocation = '';
-
-  fetch(`http://api.positionstack.com/v1/reverse?access_key=${positionStackApiKey}&query=${latitude},${longitude}`)
-    .then(T => T.json())
-    .then(response => response.data[0].county + ', ' + response.data[0].region)
 
   fetch(`http://api.positionstack.com/v1/reverse?access_key=${positionStackApiKey}&query=${latitude},${longitude}`)
     .then(response => response.json().then(data => ({ status: response.status, data })))
@@ -310,7 +295,8 @@ function getFormattedLocation(position, callback) {
       console.error(error);
       alert('Error fetching location information from servers. Attempting to use latitude and longitude...');
       formattedLocation = latitude.toString() + ', ' + longitude.toString();
-    }).finally(() => {
+    })
+    .finally(() => {
       if (callback && typeof callback === "function") {
         callback(formattedLocation);
       }
