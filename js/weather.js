@@ -1,7 +1,12 @@
-(function () {
-  let geoCodeApiKey = config.geocodeXyzApiKey;
-  let openWmApiKey = config.openWmApiKey;
+let geoCodeApiKey = config.geocodeXyzApiKey;
+let openWmApiKey = config.openWmApiKey;
 
+let formattedLocation = '';
+let latitude = '';
+let longitude = '';
+let units = '';
+
+(function () {
   let weather = document.querySelector('.weather');
   let temperature = document.querySelector('.weather__temperature');
   let unit = document.querySelector('.weather__unit');
@@ -9,11 +14,7 @@
   let conditionText = document.querySelector('.weather__condition-text');
   let location = document.querySelector('.weather__location');
 
-  let formattedLocation = '';
-  let latitude = '';
-  let longitude = '';
-  let units = '';
-
+  
   chrome.storage.sync.get({
     weather: {}
   }, function (options) {
@@ -62,13 +63,11 @@
     unit.innerHTML = parseUnits(units);
     condition.classList.add('icon-' + data.weather[0].icon); // Need to use OWM icons, from here: https://openweathermap.org/weather-conditions
     conditionText.innerHTML = data.weather[0].description;
-    location.innerHTML = printLocation();
+    location.innerHTML = printLocation() ?? data.name + ', ' + data.sys.country;
   }
 
   function printLocation() {
-    if (!!formattedLocation) {
-      return formattedLocation;
-    } else {
+    if (Number(formattedLocation.split(',')[0])) {
       fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=${geoCodeApiKey}`)
         .then(response => response.json().then(data => ({ status: response.status, data })))
         .then((response) => {
@@ -76,8 +75,10 @@
         })
         .catch((error) => {
           console.error(error);
-          alert('Error getting location information.');
+          alert('Error getting formatted location information.');
         });
+    } else {
+      return formattedLocation;
     }
   }
 

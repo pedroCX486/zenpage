@@ -128,7 +128,7 @@ function saveWeatherOptions() {
     units: weatherUnits,
     location: weatherLocationOption.value,
     latitude: latitude,
-    logitude: longitude
+    longitude: longitude
   };
 
   chrome.storage.sync.set({
@@ -274,7 +274,7 @@ function getCurrentLocation() {
       alert('Error: ' + error.message);
     });
   } else {
-    alert('Your browser doesn\'t support geolocation. Please manually enter your location in the text box.');
+    alert(`Your browser doesn't support geolocation. Please manually enter your location in the text box.`);
   }
 }
 
@@ -282,20 +282,27 @@ function getFormattedLocation(position, callback) {
   let apiKey = config.geocodeXyzApiKey;
   latitude = position.coords.latitude;
   longitude = position.coords.longitude;
+  let formattedLocation = '';
 
   fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=${apiKey}`)
     .then(response => response.json().then(data => ({ status: response.status, data })))
     .then((response) => {
-      let formattedLocation = response.data.region;
-
-      if (callback && typeof callback === "function") {
-        callback(formattedLocation);
+      if(!!response.data.error.code){
+        alert('Failed to get formatted location information. Using latitude and longitude.');
+        formattedLocation = latitude.toString() + ', ' + longitude.toString();
+      } else {
+        formattedLocation = response.data.region;
       }
     })
     .catch((error) => {
       console.error(error);
-      alert('Error getting location information.');
+      alert('Error fetching location information from servers. Attempting to use latitude and longitude...');
+      formattedLocation = latitude.toString() + ', ' + longitude.toString();
     });
+
+    if (callback && typeof callback === "function") {
+      callback(formattedLocation);
+    }
 }
 
 function setLocation(formattedLocation) {

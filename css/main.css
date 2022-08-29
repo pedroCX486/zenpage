@@ -128,6 +128,10 @@ a:focus {
   /*font-weight: 300;*/
 }
 
+.weather-location {
+  width: 25rem;
+}
+
 .search,
 .search__input {
   width: 100%;
