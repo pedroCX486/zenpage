@@ -17,6 +17,10 @@ Forked from the original [ZenPage](https://github.com/jack-doyle/zenpage) to fix
   
 ProTip: The OpenWeatherMap API Key takes a while to activate, usually up to an hour.  
 
+## Updating
+
+Same process as installing, just remember to not lose your `config.js` file! (If you know how to git, you can just do a `git clone` when installing and `git pull` every time you want to update!)
+
 ## Screenshots
 ![Home-one](/screenshots/valley.png?raw=true)
 ![Home-two](/screenshots/strawberries.png?raw=true)
