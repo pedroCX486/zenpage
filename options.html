@@ -268,12 +268,15 @@
         <input type="text" id="weather-location" name="weather-location" class="weather-location"
           placeholder="Type your 'City, Full State Name' - eg.: Boston, Massachusetts"><br><br>
         <button type="button" class="geolocate">Try to get current (geo)location</button>
+        <div id="location-status"></div>
       </div>
 
     </div>
 
-    <div id="status"></div>
-    <button type="button" id="save">Save</button>
+    <div class="save">
+      <button type="button" id="save">Save</button>
+      <div id="status"></div>
+    </div>
   </div>
   <script src="js/config.js"></script>
   <script src="js/options.js"></script>

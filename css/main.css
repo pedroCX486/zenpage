@@ -393,8 +393,8 @@ a:focus {
   padding: 0.4rem 0.6rem;
 }
 
-#save {
-  margin-bottom: 2rem;
+.save {
+  padding-bottom: 2rem;
 }
 
 .fade-animation {

@@ -4,6 +4,8 @@ let weatherCelsiusOption = document.querySelector('#celsius');
 let weatherFahrenheitOption = document.querySelector('#fahrenheit');
 let weatherDisplayOption = document.querySelector('#display-weather');
 
+let locationFetchStatus = document.getElementById('location-status');
+
 function saveBookmarks() {
   let bookmarks = [];
   let bookmarksOptions = document.querySelectorAll('.bookmark-option-category');
@@ -139,7 +141,7 @@ function saveOptions() {
 
 function notifySave() {
   let status = document.getElementById('status');
-  status.textContent = 'Options saved.';
+  status.textContent = 'Saved.';
   setTimeout(function () {
     status.textContent = '';
   }, 750);
@@ -261,6 +263,7 @@ function getCurrentLocation() {
   if ('geolocation' in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
       if (position) {
+        locationFetchStatus.textContent = 'Fetching data, please wait...';
         getFormattedLocation(position, setLocation);
       } else {
         alert('Error getting location. Please manually enter your location in the text box.');
@@ -305,6 +308,11 @@ function getFormattedLocation(position, callback) {
 
 function setLocation(location) {
   weatherLocationOption.value = location;
+  locationFetchStatus.textContent = 'Done!';
+
+  setTimeout(() => {
+    locationFetchStatus.textContent = '';
+  }, 1000);
 }
 
 document.querySelector('.geolocate').addEventListener('click', getCurrentLocation);
