@@ -279,30 +279,34 @@ function getCurrentLocation() {
 }
 
 function getFormattedLocation(position, callback) {
-  let apiKey = config.geocodeXyzApiKey;
+  let positionStackApiKey = config.positionStackApiKey;
   latitude = position.coords.latitude;
   longitude = position.coords.longitude;
   let formattedLocation = '';
 
-  fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=${apiKey}`)
+  fetch(`http://api.positionstack.com/v1/reverse?access_key=${positionStackApiKey}&query=${latitude},${longitude}`)
+    .then(T => T.json())
+    .then(response => response.data[0].county + ', ' + response.data[0].region)
+
+  fetch(`http://api.positionstack.com/v1/reverse?access_key=${positionStackApiKey}&query=${latitude},${longitude}`)
     .then(response => response.json().then(data => ({ status: response.status, data })))
     .then((response) => {
-      if(!!response.data.error.code){
+      if (!response.data.data.length) {
         alert('Failed to get formatted location information. Using latitude and longitude.');
         formattedLocation = latitude.toString() + ', ' + longitude.toString();
       } else {
-        formattedLocation = response.data.region;
+        formattedLocation = response.data.data[0].county + ', ' + response.data.data[0].region;
       }
     })
     .catch((error) => {
       console.error(error);
       alert('Error fetching location information from servers. Attempting to use latitude and longitude...');
       formattedLocation = latitude.toString() + ', ' + longitude.toString();
+    }).finally(() => {
+      if (callback && typeof callback === "function") {
+        callback(formattedLocation);
+      }
     });
-
-    if (callback && typeof callback === "function") {
-      callback(formattedLocation);
-    }
 }
 
 function setLocation(formattedLocation) {

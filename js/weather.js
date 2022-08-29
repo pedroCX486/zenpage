@@ -1,5 +1,5 @@
-let geoCodeApiKey = config.geocodeXyzApiKey;
 let openWmApiKey = config.openWmApiKey;
+let positionStackApiKey = config.positionStackApiKey;
 
 let formattedLocation = '';
 let latitude = '';
@@ -14,7 +14,7 @@ let units = '';
   let conditionText = document.querySelector('.weather__condition-text');
   let location = document.querySelector('.weather__location');
 
-  
+
   chrome.storage.sync.get({
     weather: {}
   }, function (options) {
@@ -29,11 +29,11 @@ let units = '';
         fetchWeather();
       } else {
         // Get Lat & Long from Formatted Location.
-        fetch(`https://geocode.xyz/${formattedLocation}?json=1&auth=${geoCodeApiKey}`)
+        fetch(`http://api.positionstack.com/v1/forward?access_key=${positionStackApiKey}&query=${formattedLocation}`)
           .then(response => response.json().then(data => ({ status: response.status, data })))
           .then((response) => {
-            latitude = response.data.latt;
-            longitude = response.data.longt;
+            latitude = response.data.data[0].latitude;
+            longitude = response.data.data[0].longitude;
           }).then(() => {
             fetchWeather();
           })
@@ -63,20 +63,14 @@ let units = '';
     unit.innerHTML = parseUnits(units);
     condition.classList.add('icon-' + data.weather[0].icon); // Need to use OWM icons, from here: https://openweathermap.org/weather-conditions
     conditionText.innerHTML = data.weather[0].description;
-    location.innerHTML = printLocation() ?? data.name + ', ' + data.sys.country;
+    printLocation().then(res => location.innerHTML = res);
   }
 
-  function printLocation() {
+  async function printLocation() {
     if (Number(formattedLocation.split(',')[0])) {
-      fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=${geoCodeApiKey}`)
-        .then(response => response.json().then(data => ({ status: response.status, data })))
-        .then((response) => {
-          return response.data.region;
-        })
-        .catch((error) => {
-          console.error(error);
-          alert('Error getting formatted location information.');
-        });
+      return fetch(`http://api.positionstack.com/v1/reverse?access_key=${positionStackApiKey}&query=${latitude},${longitude}`)
+        .then(T => T.json())
+        .then(response => response.data[0].county + ', ' + response.data[0].region)
     } else {
       return formattedLocation;
     }
