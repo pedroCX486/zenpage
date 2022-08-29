@@ -10,12 +10,12 @@ Forked from the original [ZenPage](https://github.com/jack-doyle/zenpage) to fix
 * Weather widget displaying information from [OpenWeatherMap](https://openweathermap.org/)
 
 ## Installing
-First click in Code > Download Zip > Extract zip
-Then in your browser go to Extensions > Enable Developer Mode > Load Unpacked > Select the directory where you extracted the zip
-You WILL NEED an API key (easy to get) from the services used to have full functionality (Unsplash, Geocode.xyz and OpenWeatherMap), put them in the `config-example.js` file and rename it to `config.js`.
-Done!
-
-ProTip: The OpenWeatherMap API Key takes a while to activate, usually up to an hour.
+First click in Code > Download Zip > Extract zip  
+Then in your browser go to Extensions > Enable Developer Mode > Load Unpacked > Select the directory where you extracted the zip  
+You WILL NEED an API key (easy to get) from the services used to have full functionality (Unsplash, Geocode.xyz and OpenWeatherMap), put them in the `config-example.js` file and rename it to `config.js`.  
+Done!  
+  
+ProTip: The OpenWeatherMap API Key takes a while to activate, usually up to an hour.  
 
 ## Screenshots
 ![Home-one](/screenshots/valley.png?raw=true)
