@@ -3,9 +3,9 @@ let positionStackApiKey = config.positionStackApiKey;
 
 (function () {
   let weather = document.querySelector('.weather');
-  let temperature = document.querySelector('.weather__temperature');
-  let unit = document.querySelector('.weather__unit');
-  let condition = document.querySelector('.weather__condition');
+  let temperatureText = document.querySelector('.weather__temperature');
+  let unitText = document.querySelector('.weather__unit');
+  let conditionIcon = document.querySelector('.weather__condition');
   let conditionText = document.querySelector('.weather__condition-text');
   let weatherLocationText = document.querySelector('.weather__location');
 
@@ -40,9 +40,9 @@ let positionStackApiKey = config.positionStackApiKey;
   }
 
   function updateWeather(data, units, location) {
-    temperature.innerHTML = data.main.temp.toString().split('.')[0] + '&deg;';
-    unit.innerHTML = parseUnits(units);
-    condition.classList.add('icon-' + data.weather[0].icon); // Need to use OWM icons, from here: https://openweathermap.org/weather-conditions
+    temperatureText.innerHTML = data.main.temp.toString().split('.')[0] + '&deg;';
+    unitText.innerHTML = parseUnits(units);
+    conditionIcon.classList.add('icon-' + data.weather[0].icon); // Need to use OWM icons, from here: https://openweathermap.org/weather-conditions
     conditionText.innerHTML = data.weather[0].description;
     weatherLocationText.innerHTML = location;
   }
