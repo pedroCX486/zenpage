@@ -279,32 +279,32 @@ function getFormattedLocation(position, callback) {
   let positionStackApiKey = config.positionStackApiKey;
   let latitude = position.coords.latitude;
   let longitude = position.coords.longitude;
-  let formattedLocation = '';
+  let location = '';
 
   fetch(`http://api.positionstack.com/v1/reverse?access_key=${positionStackApiKey}&query=${latitude},${longitude}`)
     .then(response => response.json().then(data => ({ status: response.status, data })))
     .then((response) => {
       if (!response.data.data.length) {
         alert('Failed to get formatted location information. Using latitude and longitude.');
-        formattedLocation = latitude.toString() + ', ' + longitude.toString();
+        location = latitude.toString() + ', ' + longitude.toString();
       } else {
-        formattedLocation = response.data.data[0].county + ', ' + response.data.data[0].region;
+        location = response.data.data[0].county + ', ' + response.data.data[0].region;
       }
     })
     .catch((error) => {
       console.error(error);
       alert('Error fetching location information from servers. Attempting to use latitude and longitude...');
-      formattedLocation = latitude.toString() + ', ' + longitude.toString();
+      location = latitude.toString() + ', ' + longitude.toString();
     })
     .finally(() => {
       if (callback && typeof callback === "function") {
-        callback(formattedLocation);
+        callback(location);
       }
     });
 }
 
-function setLocation(formattedLocation) {
-  weatherLocationOption.value = formattedLocation;
+function setLocation(location) {
+  weatherLocationOption.value = location;
 }
 
 document.querySelector('.geolocate').addEventListener('click', getCurrentLocation);
