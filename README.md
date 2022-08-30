@@ -1,5 +1,5 @@
 # ZenPage+
-Chrome (and Firefox but untested) extension that replaces the New Tab page with a personalised homepage, featuring beautiful photography, bookmark management and weather information.
+Chrome (or any Chrome based browser and Firefox but untested) extension that replaces the New Tab page with a personalised homepage, featuring beautiful photography, bookmark management and weather information.
 
 Forked from the original [ZenPage](https://github.com/jack-doyle/zenpage) to fix most issues and refactor the old broken code.
 
