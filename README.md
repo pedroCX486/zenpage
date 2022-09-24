@@ -27,7 +27,7 @@ Same process as installing, just remember to not lose your `config.js` file! (If
 ![Bookmarks](/screenshots/bmarks.png?raw=true)
 
 ## License
-Same as the old ZenPage. Which is, who knows. My changes are under the WTFPL.
+Same as the old ZenPage. Which is, who knows. My changes are under the ISC license.
 
 ## Contributing
 Just open a PR, if I agree with your changes I'll merge. If not, fork it.
