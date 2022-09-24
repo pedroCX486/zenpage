@@ -18,7 +18,7 @@
   },
   "applications": {
     "gecko": {
-      "id": "club.tilde.pedrocx486.zenpageplus"
+      "id": "club.pedrocx486.zenpageplus"
     }
   },
   "content_security_policy": "script-src 'self' object-src 'self'"
