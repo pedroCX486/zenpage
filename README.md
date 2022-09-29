@@ -1,3 +1,6 @@
+# Regarding Manifest V3
+Unfortunately due to the huge amount of effort required, I won't be moving this extension to the MV3 service worker model (would it even be possible?). Contributions as always are welcome.
+
 # ZenPage+
 Chrome (or any Chromium based browser and Firefox but untested) extension that replaces the New Tab page with a personalised homepage, featuring beautiful photography, bookmark management and weather information.
 
@@ -30,7 +33,7 @@ Same process as installing, just remember to not lose your `config.js` file! (If
 Same as the old ZenPage. Which is, who knows. My changes are under the ISC license.
 
 ## Contributing
-Just open a PR, if I agree with your changes I'll merge. If not, fork it.
+Just open a PR, if I agree with your changes I'll merge.
 
 ## TODO:
 - Change the FontAwesome library to something better and opensource
